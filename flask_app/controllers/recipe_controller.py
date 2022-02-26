@@ -7,6 +7,7 @@ from flask_app.models.user import User
 from flask_app.models.recipe import Recipe
 
 #===========================================================
+
 #ROUTE TO RENDER RECIPE PAGE TEMP
 
 @app.route("/create_recipe")
@@ -15,6 +16,7 @@ def create_recipe():
         flash("please login/ register before entering the site!")
         return redirect("/")
     return render_template("create_recipe.html")
+
 #===========================================================
 
 
@@ -53,6 +55,8 @@ def creating_recipe():
 
 #===========================================================
 
+#DELETE
+
 @app.route('/user/<int:id>/delete')
 def delete(id):
     data = {
@@ -66,7 +70,7 @@ def delete(id):
 #ROUTE to update the owner info
 
 @app.route("/update/<int:id>")
-def update_owner(id):
+def update_recipe(id):
     if "user_id" not in session:
         flash("please login/ register before entering the site!")
         return redirect("/")
@@ -92,8 +96,12 @@ def updating_Recipe(id):
         'under_thirty' : request.form['under_thirty'],
         'user_id' : session['user_id']
     }
-    Recipe.update_Recipe(data)
-    return redirect("/user")
+    if Recipe.validate_Recipe(request.form):
+            Recipe.update_Recipe(data)
+            return redirect("/user")
+
+    return redirect("/update")
+
 #=======================================================
 #View one recipe
 
